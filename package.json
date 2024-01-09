@@ -1,0 +1,15 @@
+{
+  "name": "personal-budget",
+  "version": "1.0.0",
+  "description": "Personal budget manager",
+  "main": "index.js",
+  "scripts": {
+    "t": "nodemon index.js"
+  },
+  "author": "Artur Kozub",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.2"
+  }
+}
