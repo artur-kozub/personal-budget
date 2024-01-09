@@ -1,10 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const app = express()
 const { v4: uuidv4 } = require('uuid')
 
 const PORT = 3000
 
+// Use middleware to parse JSON data
+app.use(express.json());
+
+// Basic array with the first envelop
 const envelopes = 
 [
 
@@ -15,24 +18,22 @@ const envelopes =
     },
 
 ]
-let nextEnvelopeId = Math.max(...envelopes.map(envelope => envelope.id))
 
-app.use(bodyParser.json())
-
+// Just a root directory in order to make sure all good
 app.get('/', (req, res) => {
     res.send('I am the personal budget basic endpoint')
 })
 
-app.post('/envelopes', (req, res, next) => {
+// Create envelope
+app.post('/envelopes', (req, res) => {
     const { title, budget } = req.body
 
     if (!title || !budget) {
         res.status(400).send('Title and budget are required')
     }
 
-    nextEnvelopeId++;
     const newEnvelope = {
-        id: uuidv4(),
+        id: uuidv4(), // Generate unique ID
         title,
         budget
     }
@@ -44,10 +45,12 @@ app.post('/envelopes', (req, res, next) => {
         })
 })
 
+// Get all envelopes
 app.get('/envelopes', (req, res) => {
     res.status(200).send(envelopes)
 })
 
+// Get envelope by specific ID
 app.get('/envelopes/:id', (req, res) => {
     const requestedId = req.params.id;
 
@@ -62,6 +65,7 @@ app.get('/envelopes/:id', (req, res) => {
     }
 })
 
+// Update existing envelope
 app.put('/envelopes/:id', (req, res) => {
     const requestedId = req.params.id;
 
@@ -89,6 +93,7 @@ app.put('/envelopes/:id', (req, res) => {
     }
 });
 
+// Delete envelope by specific ID
 app.delete('/envelopes/:id', (req, res) => {
     const requestedId = req.params.id;
 
@@ -102,7 +107,8 @@ app.delete('/envelopes/:id', (req, res) => {
     }
 });
 
-app.put('/evelopes/transfer/:from/:to', (req, res) => {
+// This one to transfer budget from one envelope to another
+app.put('/envelopes/transfer/:from/:to', (req, res) => {
     const fromEnvelope = req.params.from
     const toEnvelope = req.params.to
 
@@ -121,6 +127,7 @@ app.put('/evelopes/transfer/:from/:to', (req, res) => {
     }
 })
 
+// Start server
 app.listen(PORT, () => {
     console.log('Server is working at http://localhost:' + PORT)
 })
